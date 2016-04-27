@@ -31,7 +31,7 @@ while 1:
 		print("22 pressed")
 		sleep(0.3)
 		fi=player.poll() 
-		if fi==0:
+		if fi=="None":
 			flag=1
 			print("flag=1")
 		else:
@@ -41,7 +41,7 @@ while 1:
 		print("23 pressed")
                 sleep(0.2)
                 fi=player.poll()
-		print("fi" + str(fi))
+		print("fi %d",fi)
 #		player.kill()
                 if fi!=0:
                         player.stdin.write("q")
