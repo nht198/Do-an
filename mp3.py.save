@@ -3,7 +3,6 @@ import glob
 from time import sleep
 import subprocess
 import RPi.GPIO as GPIO
-import urllib2
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(22,GPIO.IN) # pause
@@ -24,29 +23,22 @@ os.system('sudo killall omxplayer.bin')
 while 1:
 	if flag==1:
 		player = subprocess.Popen(["omxplayer",f[pt]],stdin=subprocess.PIPE)
-		print ("Dang choi bai: " + f[pt])
 		fi = player.poll()
 		flag=0
 		st=0
-	#read contents from url include button to play
-	try:
-		response = urllib2.urlopen('http://nht198-001-site1.1tempurl.com/mp3/status.php')
-		status = response.read()
-	except urllib2.HTTPError, e:
-		print e.code
-	except urllib2.URLError, e:
-		print e.args 
 
-	#end read, it written in 'status' var
-	if (status=='Play'): # Pause or Play
-		print("Play/Pause pressed")
-		sleep(0.5)
+	if (GPIO.input(22) == 0): # Pause or Play
+		print("22 pressed")
+		sleep(0.3)
 		fi=player.poll() 
-		if fi!=0:
+		if fi==0:
+			flag=1
+			print("fi")
+		else:
 			 player.stdin.write("p")
 
-	if (status=='Stop'): #Stop
-		print("Stop pressed")
+	if (GPIO.input(23) == 0): #Stop
+		print("23 pressed")
                 sleep(0.2)
                 fi=player.poll()
 		print("fi %d",fi)
@@ -55,8 +47,8 @@ while 1:
                         player.stdin.write("q")
 			st=1
 
-	if (status=='Next'): #Next
-		print("Next pressed")
+	if (GPIO.input(24) == 0): #Next
+		print("24 pressed")
 		sleep(0.3)
                 if st==0:
 			player.stdin.write("q")
@@ -66,8 +58,8 @@ while 1:
 			pt=h-1
 	
 
-	elif (status=='Previous'): #Previous
-		print("Previuos pressed")
+	elif (GPIO.input(25) == 0): #Previous
+		print("25 pressed")
 		sleep(0.3)
                 if st==0:
                         player.stdin.write("q")
